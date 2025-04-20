@@ -1,67 +1,89 @@
-<html>
+<!DOCTYPE html>
+<html lang="uk">
 <head>
-    <title> MaxNT Official </title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MaxNT Official — Шахи</title>
+  <style>
+    .chessboard {
+      display: grid;
+      grid-template-columns: repeat(8, 60px);
+      grid-template-rows: repeat(8, 60px);
+      border: 4px solid #333;
+      margin: 20px auto;
+      width: fit-content;
+    }
+    .cell {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 36px;
+      user-select: none;
+    }
+    .white {
+      background-color: #eee;
+    }
+    .black {
+      background-color: #444;
+      color: white;
+    }
+    .cell.dragover {
+      outline: 2px dashed yellow;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Продовження</h1>
-        <nav>
-            <ul>
-                <li><a href="#"> Сервер1 | В розробці, тимчасово закрито  </a></li>
-                <li><a href="#"> Сервер2 </a></li>
-                <li><a href="#"> Сервер3 </a></li>
-				<li><a href="https://t.me/MaxNT_Live"> Telegram | LIVE </a></li>
-            </ul>
-        </nav>
-    </header>
-			
-			<input type="radio" id="option1" name="group1" value="value1">
-<label for="option1">Слабкість</label><br>
+  <h2 style="text-align: center;">Інтерактивні шахи</h2>
+  <div class="chessboard" id="board"></div>
 
-<input type="radio" id="option2" name="group1" value="value2">
-<label for="option2">Наполегливість</label><br>
+  <script>
+    const board = document.getElementById('board');
+    const pieces = {
+      0: ['♜','♞','♝','♛','♚','♝','♞','♜'],
+      1: Array(8).fill('♟'),
+      6: Array(8).fill('♙'),
+      7: ['♖','♘','♗','♕','♔','♗','♘','♖']
+    };
 
-<input type="radio" id="option3" name="group1" value="value3">
-<label for="option3">Підвищеність</label>
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.classList.add((row + col) % 2 === 0 ? 'white' : 'black');
+        cell.setAttribute('data-row', row);
+        cell.setAttribute('data-col', col);
+        cell.setAttribute('draggable', 'true');
 
-	<input type="radio" id="option4" name="group1" value="value1">
-<label for="option1">Обмеженість</label><br>
+        if (pieces[row]) {
+          cell.textContent = pieces[row][col];
+        }
 
-	<input type="radio" id="option5" name="group1" value="value1">
-<label for="option1">Крайня перевищеність</label><br>
+        cell.addEventListener('dragstart', e => {
+          e.dataTransfer.setData('text/plain', e.target.textContent);
+          e.target.textContent = '';
+        });
 
-<input type="radio" id="option2" name="group1" value="value2">
-<label for="option2">Вогонь</label><br>
+        cell.addEventListener('dragover', e => {
+          e.preventDefault();
+          cell.classList.add('dragover');
+        });
 
-<input type="radio" id="option3" name="group1" value="value3">
-<label for="option3">ПОТУЖНІСТЬ</label>
+        cell.addEventListener('dragleave', () => {
+          cell.classList.remove('dragover');
+        });
 
-<input type="radio" id="option3" name="group1" value="value3">
-<label for="option3">Велика потужність (100 LVL)</label>
+        cell.addEventListener('drop', e => {
+          e.preventDefault();
+          const piece = e.dataTransfer.getData('text/plain');
+          cell.textContent = piece;
+          cell.classList.remove('dragover');
+        });
 
-    <main>
-        <section>
-            <h2>Про цей сайт</h2>
-            <p> Це приклад простого HTML вебсайту. Ви можете використовувати його як основу для створення власного сайту.</p>
-        </section>
-
-        <section>
-            <h2>INFO</h2>
-            <ul>
-                <li>Далі буде!</li>
-                <li>Сайт оновлюється поступово.</li>
-                <li>Слідкуйте за подіями!</li>
-            </ul>
-        </section>
-    </main>
-
-<p> Соцмережі: </p>
-<button onclick="window.location.href='https://www.google.com';"> Google </button>
-<button onclick="window.location.href='https://www.youtube.com/@MaxNT_Official';"> YouTube </button>
-<button onclick="window.location.href='https://www.instagram.com/maxnt_official;"> Instagram </button>
-
-    <footer>
-        <p>&copy; 2025 | MaxNT Official &copy; All rights reserved. </p>
-    </footer>
+        board.appendChild(cell);
+      }
+    }
+  </script>
 </body>
 </html>
